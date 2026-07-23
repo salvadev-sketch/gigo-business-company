@@ -1,0 +1,34 @@
+.banner .swiper {
+    width: 240px;
+    height: 320px;
+  }
+  
+  .banner .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .banner .swiper-slide:nth-child(1) {
+    background-image: url('/assets/barnner-books/book1.png');
+}
+
+.banner .swiper-slide:nth-child(2) {
+    background-image: url('/assets/barnner-books/book2.png');
+}
+
+.banner .swiper-slide:nth-child(3) {
+    background-image: url('/assets/barnner-books/book3.png');
+}
+
+.banner .swiper-slide:nth-child(4) {
+    background-image: url('/assets/barnner-books/book4.png');
+}
+
+.banner .swiper-slide:nth-child(5) {
+    background-image: url('/assets/barnner-books/book5.png');
+}
