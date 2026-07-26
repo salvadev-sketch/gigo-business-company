@@ -1,9 +1,32 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LanguageContext } from "../contexts/LanguageContext";
+import { API } from "../dashboard/dashboardUtils";
+
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=600";
 
 const Banner = () => {
   const { t } = useContext(LanguageContext);
+  const [heroImages, setHeroImages] = useState([FALLBACK_IMAGE]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    fetch(`${API}/all-products?limit=5`)
+      .then(r => r.json())
+      .then(d => {
+        const urls = (d.products || []).map(p => p.imageURL).filter(Boolean);
+        if (urls.length > 0) setHeroImages(urls);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const id = setInterval(() => {
+      setActiveIndex(i => (i + 1) % heroImages.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [heroImages]);
 
   return (
     <div style={{
@@ -113,20 +136,45 @@ const Banner = () => {
             borderRadius: "50%",
             zIndex: 0,
           }} />
-          <img
-            src="https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=600"
-            alt="GIGO Premium Drinks"
-            style={{
-              width: "100%",
-              maxWidth: "380px",
-              height: "clamp(280px, 40vw, 460px)",
-              objectFit: "cover",
-              borderRadius: "30px",
-              boxShadow: "0 40px 80px rgba(0,0,0,0.3)",
-              position: "relative",
-              zIndex: 1,
-            }}
-          />
+          <div style={{
+            position: "relative",
+            width: "100%",
+            maxWidth: "380px",
+            height: "clamp(280px, 40vw, 460px)",
+            borderRadius: "30px",
+            overflow: "hidden",
+            boxShadow: "0 40px 80px rgba(0,0,0,0.3)",
+            zIndex: 1,
+          }}>
+            {heroImages.map((src, i) => (
+              <img
+                key={src + i}
+                src={src}
+                alt="GIGO Product"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  opacity: i === activeIndex ? 1 : 0,
+                  transition: "opacity 0.8s ease-in-out",
+                }}
+              />
+            ))}
+            {/* Slide indicator dots */}
+            {heroImages.length > 1 && (
+              <div style={{ position: "absolute", bottom: "14px", right: "14px", display: "flex", gap: "6px", zIndex: 2 }}>
+                {heroImages.map((_, i) => (
+                  <span key={i} style={{
+                    width: "7px", height: "7px", borderRadius: "50%",
+                    background: i === activeIndex ? "#fff" : "rgba(255,255,255,0.4)",
+                    transition: "background 0.3s",
+                  }} />
+                ))}
+              </div>
+            )}
+          </div>
           {/* Floating badge bottom */}
           <div style={{
             position: "absolute",

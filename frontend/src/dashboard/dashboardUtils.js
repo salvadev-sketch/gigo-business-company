@@ -1,6 +1,6 @@
 // ── SHARED CONSTANTS, STYLES & HELPERS ───────────────────────────────────────
 
-export const API = "https://gigo-backend-4iea.onrender.com";
+export const API = import.meta.env.VITE_API_URL || "https://gigo-business-company-48bi.onrender.com";
 
 export const C = {
   bg: "#0D1B2A", surface: "#1E2D3D", surfaceHover: "#243547",
