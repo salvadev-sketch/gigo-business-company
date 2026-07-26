@@ -27,45 +27,50 @@ const Shop = () => {
               key={product._id}
               className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-200 overflow-hidden flex flex-col"
             >
-              <div className="w-full aspect-square bg-gray-100 overflow-hidden">
+              <div className="relative w-full aspect-square bg-gray-100 overflow-hidden">
                 <img
                   src={product.imageURL}
                   alt={product.productName}
                   className="w-full h-full object-cover"
                   onError={(e) => { e.target.src = "https://placehold.co/400x400?text=GIGO"; }}
                 />
-              </div>
-              <div className="flex flex-col gap-1 p-4 flex-1">
-                <span className="text-xs uppercase tracking-wide text-gray-400 font-medium">
+
+                {/* Category badge - top left */}
+                <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wide bg-white/90 text-gray-700 px-2 py-1 rounded-full">
                   {product.category}
                 </span>
-                <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2">
-                  {product.productName}
-                </h3>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="font-bold text-blue-700 text-lg">
+
+                {/* Stock badge - top right */}
+                {product.stock === 0 && (
+                  <span className="absolute top-2 right-2 text-[10px] font-bold bg-red-600 text-white px-2 py-1 rounded-full">
+                    Out of Stock
+                  </span>
+                )}
+                {product.stock > 0 && product.stock <= (product.minStockLevel || 10) && (
+                  <span className="absolute top-2 right-2 text-[10px] font-bold bg-amber-500 text-white px-2 py-1 rounded-full">
+                    Low Stock
+                  </span>
+                )}
+
+                {/* Name + price overlay - bottom gradient scrim */}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pt-8 pb-3">
+                  <h3 className="text-white font-semibold text-sm leading-snug line-clamp-2 drop-shadow-sm">
+                    {product.productName}
+                  </h3>
+                  <span className="text-white font-bold text-base drop-shadow-sm">
                     {product.price?.toLocaleString()} BIF
                   </span>
-                  {product.stock <= (product.minStockLevel || 10) && product.stock > 0 && (
-                    <span className="text-[10px] font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
-                      Low Stock
-                    </span>
-                  )}
-                  {product.stock === 0 && (
-                    <span className="text-[10px] font-semibold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
-                      Out of Stock
-                    </span>
-                  )}
                 </div>
-                <Link to={`/product/${product._id}`} className="mt-3">
-                  <button
-                    className="bg-blue-700 hover:bg-blue-800 transition-colors font-semibold text-white py-2 rounded-lg w-full text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={product.stock === 0}
-                  >
-                    Reba Vyinshi
-                  </button>
-                </Link>
               </div>
+
+              <Link to={`/product/${product._id}`} className="p-3">
+                <button
+                  className="bg-blue-700 hover:bg-blue-800 transition-colors font-semibold text-white py-2 rounded-lg w-full text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={product.stock === 0}
+                >
+                  Reba Vyinshi
+                </button>
+              </Link>
             </div>
           ))}
         </div>
