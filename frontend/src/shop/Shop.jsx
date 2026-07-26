@@ -20,7 +20,7 @@ const Shop = () => {
             <img
               src={product.imageURL}
               alt={product.productName}
-              className="h-96 w-full object-cover"
+              className="h-48 w-full object-cover rounded-t-lg"
             />
             <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               {product.productName}
