@@ -87,6 +87,20 @@ function Products({ token, t }) {
     else setMsg({ type: "error", text: d.error || "Failed" });
   };
 
+  const seedDefaults = async () => {
+    if (!confirm("Seed 10 default demo products in each category? This only works while the product list is empty.")) return;
+    setLoading(true);
+    try {
+      const r = await fetch(`${API}/seed/products`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+      const d = await r.json();
+      if (r.ok && d.success) { setMsg({ type: "success", text: d.message }); load(); }
+      else { setMsg({ type: "error", text: d.error || "Failed to seed" }); setLoading(false); }
+    } catch (err) {
+      setMsg({ type: "error", text: "Failed to seed products" });
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <div className="gigo-section-header" style={S.sectionHeader}>
@@ -96,6 +110,7 @@ function Products({ token, t }) {
         </div>
         <div style={{ display: "flex", gap: "10px" }}>
           <input style={{ ...S.input, width: "200px" }} placeholder={t("searchPlaceholder") || "Search..."} value={search} onChange={e => setSearch(e.target.value)} />
+          {products.length === 0 && <button style={S.btn("secondary")} onClick={seedDefaults}>Seed Defaults</button>}
           <button style={S.btn("primary")} onClick={openAdd}>+ {t("addProduct") || "Add Product"}</button>
         </div>
       </div>

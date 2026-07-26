@@ -219,6 +219,98 @@ app.post("/upload-product", verifyToken, async (req, res) => {
     }
 });
 
+// ── Seed default demo products (owner only) — 10+ per category ───────────────
+app.post("/seed/products", verifyToken, async (req, res) => {
+    try {
+        const dbUser = await User.findOne({ email: req.user.email });
+        if (!dbUser || dbUser.role !== "owner") {
+            return res.status(403).json({ error: "Forbidden - owner only" });
+        }
+
+        const existing = await Product.countDocuments();
+        if (existing > 0) {
+            return res.status(400).json({ error: `Products already exist (${existing}). Remove them first if you want to reseed.` });
+        }
+
+        const BRANCHES = ["Bujumbura HQ", "Kampala", "Uganda", "DRC"];
+        const placeholder = (name) => `https://placehold.co/400x400?text=${encodeURIComponent(name)}`;
+        const nextBranch = (() => { let i = 0; return () => BRANCHES[i++ % BRANCHES.length]; })();
+
+        const DEFAULTS = {
+            "Alcoholic": [
+                { productName: "Amstel Lager 500ml", brandName: "Amstel", price: 1500 },
+                { productName: "Primus Beer 500ml", brandName: "Primus", price: 1200 },
+                { productName: "Mützig Beer 500ml", brandName: "Mützig", price: 1400 },
+                { productName: "Skol Lager 500ml", brandName: "Skol", price: 1200 },
+                { productName: "Heineken 330ml", brandName: "Heineken", price: 1800 },
+                { productName: "Guinness Smooth 500ml", brandName: "Guinness", price: 1700 },
+                { productName: "Tusker Lager 500ml", brandName: "Tusker", price: 1600 },
+                { productName: "Johnnie Walker Red Label 750ml", brandName: "Johnnie Walker", price: 22000 },
+                { productName: "Baileys Irish Cream 700ml", brandName: "Baileys", price: 25000 },
+                { productName: "Konyagi Gin 250ml", brandName: "Konyagi", price: 3500 },
+            ],
+            "Non-Alcoholic": [
+                { productName: "Coca-Cola 500ml", brandName: "Coca-Cola", price: 600 },
+                { productName: "Fanta Orange 500ml", brandName: "Fanta", price: 600 },
+                { productName: "Sprite 500ml", brandName: "Sprite", price: 600 },
+                { productName: "Novida Pineapple 500ml", brandName: "Novida", price: 650 },
+                { productName: "Minute Maid Juice 1L", brandName: "Minute Maid", price: 2200 },
+                { productName: "Azam Energy Drink 500ml", brandName: "Azam", price: 1000 },
+                { productName: "Red Bull 250ml", brandName: "Red Bull", price: 2000 },
+                { productName: "Still Water 1.5L", brandName: "Inyange", price: 800 },
+                { productName: "Sparkling Water 500ml", brandName: "Inyange", price: 700 },
+                { productName: "Inyange Milk 500ml", brandName: "Inyange", price: 900 },
+            ],
+            "Food": [
+                { productName: "Rice 25kg", brandName: "Generic", price: 25000 },
+                { productName: "Maize Flour 25kg", brandName: "Generic", price: 18000 },
+                { productName: "Cooking Oil 5L", brandName: "Golden Fry", price: 12000 },
+                { productName: "Sugar 50kg", brandName: "Kabuye", price: 55000 },
+                { productName: "Beans 25kg", brandName: "Generic", price: 30000 },
+                { productName: "Spaghetti 500g", brandName: "Pembe", price: 1200 },
+                { productName: "Tomato Paste 400g", brandName: "Gino", price: 1500 },
+                { productName: "Salt 1kg", brandName: "Generic", price: 500 },
+                { productName: "Wheat Flour 25kg", brandName: "Generic", price: 20000 },
+                { productName: "Biscuits Family Pack", brandName: "Britania", price: 2000 },
+            ],
+            "Other": [
+                { productName: "Charcoal 25kg Bag", brandName: "Generic", price: 8000 },
+                { productName: "Cooking Gas Cylinder 15kg", brandName: "SP Gas", price: 45000 },
+                { productName: "Matchboxes (pack of 10)", brandName: "Generic", price: 500 },
+                { productName: "Candles Pack", brandName: "Generic", price: 1000 },
+                { productName: "Toilet Paper 4-pack", brandName: "Rosy", price: 1800 },
+                { productName: "Dish Soap 500ml", brandName: "Sunlight", price: 1200 },
+                { productName: "Laundry Soap Bar", brandName: "Sunlight", price: 800 },
+                { productName: "Insecticide Spray", brandName: "Doom", price: 3500 },
+                { productName: "Batteries AA (pack of 4)", brandName: "Generic", price: 1000 },
+                { productName: "Plastic Bags Roll", brandName: "Generic", price: 1500 },
+            ],
+        };
+
+        const toInsert = [];
+        for (const category of Object.keys(DEFAULTS)) {
+            for (const item of DEFAULTS[category]) {
+                toInsert.push({
+                    productName: item.productName,
+                    brandName: item.brandName,
+                    imageURL: placeholder(item.productName),
+                    category,
+                    description: `${item.productName} — sample product seeded for demo purposes.`,
+                    price: item.price,
+                    branch: nextBranch(),
+                    stock: 50,
+                    minStockLevel: 10,
+                });
+            }
+        }
+
+        const created = await Product.insertMany(toInsert);
+        res.status(201).json({ success: true, message: `Seeded ${created.length} products across ${Object.keys(DEFAULTS).length} categories`, count: created.length });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to seed products", details: error.message });
+    }
+});
+
 app.get("/all-products", async (req, res) => {
     try {
         const query = {};
