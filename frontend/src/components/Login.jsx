@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { LanguageContext } from "../contexts/LanguageContext";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 
 const C = {
   bg: "#0D1B2A", surface: "#1E2D3D", accent: "#F5A623",
@@ -13,11 +15,28 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const { t } = useContext(LanguageContext);
   const [error, setError] = useState("");
+  const [resetSent, setResetSent] = useState(false);
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+
+  const handleForgotPassword = async () => {
+    setError("");
+    setResetSent(false);
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError(t("loginResetEnterEmail"));
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setResetSent(true);
+    } catch (err) {
+      setError(err.message || t("loginError"));
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -55,7 +74,7 @@ const Login = () => {
           <form onSubmit={handleLogin}>
             <div style={{ marginBottom:"14px" }}>
               <label style={{ display:"block", fontSize:"11px", color:C.textMuted, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:"6px" }}>{t("loginEmail")}</label>
-              <input type="email" name="email" required placeholder="example@email.com" style={{ width:"100%", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"8px", padding:"10px 14px", color:C.text, fontSize:"13px", outline:"none", boxSizing:"border-box" }} />
+              <input type="email" name="email" required placeholder="example@email.com" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width:"100%", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"8px", padding:"10px 14px", color:C.text, fontSize:"13px", outline:"none", boxSizing:"border-box" }} />
             </div>
             <div style={{ marginBottom:"24px" }}>
               <label style={{ display:"block", fontSize:"11px", color:C.textMuted, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:"6px" }}>{t("loginPassword")}</label>
@@ -66,6 +85,12 @@ const Login = () => {
                 </button>
               </div>
             </div>
+            <div style={{ textAlign:"right", marginBottom:"16px" }}>
+              <button type="button" onClick={handleForgotPassword} style={{ background:"none", border:"none", color:C.accent, fontSize:"12px", fontWeight:"600", cursor:"pointer", padding:0 }}>
+                {t("loginForgotPassword")}
+              </button>
+            </div>
+            {resetSent && <div style={{ background:"rgba(46,160,67,0.12)", border:"1px solid #2ea043", borderRadius:"8px", padding:"10px 14px", fontSize:"12px", color:"#2ea043", fontWeight:"600", marginBottom:"16px" }}>{t("loginResetSent")}</div>}
             {error && <div style={{ background:C.redDim, border:`1px solid ${C.red}`, borderRadius:"8px", padding:"10px 14px", fontSize:"12px", color:C.red, fontWeight:"600", marginBottom:"16px" }}>{error}</div>}
             <button type="submit" disabled={loading} style={{ width:"100%", background:C.accent, color:C.bg, border:"none", borderRadius:"8px", padding:"12px", fontSize:"14px", fontWeight:"800", cursor:loading?"not-allowed":"pointer", letterSpacing:"0.04em", opacity:loading?0.7:1, transition:"opacity 0.15s" }}>
               {loading ? t("loginLoading") : t("loginSubmit")}
