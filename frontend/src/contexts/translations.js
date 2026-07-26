@@ -136,6 +136,9 @@ export const translations = {
     loginLoading: "Turiko Twinjira...",
     loginNoAccount: "Nta konti ufite?",
     loginSignupHere: "Iyandikishe hano",
+    loginForgotPassword: "Wibagiwe ijambo ry'ibanga?",
+    loginResetSent: "Imeyili yo guhindura ijambo ry'ibanga yoherejwe — reba mu bubiko bwawe.",
+    loginResetEnterEmail: "Andika imeyili yawe hejuru mbere, hanyuma ukande \"Wibagiwe ijambo ry'ibanga?\"",
     loginInvalidEmail: "Shyiramo imeyili ibereye.",
     loginError: "Habaye ikibazo. Gerageza kandi.",
     // Signup
@@ -441,6 +444,9 @@ export const translations = {
     loginLoading: "Signing in...",
     loginNoAccount: "Don't have an account?",
     loginSignupHere: "Sign up here",
+    loginForgotPassword: "Forgot password?",
+    loginResetSent: "Password reset email sent — check your inbox.",
+    loginResetEnterEmail: "Enter your email above first, then tap \"Forgot password?\".",
     loginInvalidEmail: "Please enter a valid email.",
     loginError: "Something went wrong. Please try again.",
     // Signup
@@ -746,6 +752,9 @@ export const translations = {
     loginLoading: "Connexion en cours...",
     loginNoAccount: "Vous n'avez pas de compte ?",
     loginSignupHere: "Inscrivez-vous ici",
+    loginForgotPassword: "Mot de passe oublié ?",
+    loginResetSent: "E-mail de réinitialisation envoyé — vérifiez votre boîte de réception.",
+    loginResetEnterEmail: "Entrez d'abord votre e-mail ci-dessus, puis appuyez sur « Mot de passe oublié ? ».",
     loginInvalidEmail: "Veuillez entrer un email valide.",
     loginError: "Une erreur s'est produite. Veuillez réessayer.",
     // Signup
