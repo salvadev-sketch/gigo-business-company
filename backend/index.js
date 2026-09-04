@@ -148,18 +148,19 @@ const verifyToken = async (req, res, next) => {
 // ── Sync Firebase user into MongoDB (called by frontend after sign-up/sign-in) ─
 app.post("/users", async (req, res) => {
     try {
-        const { name, email, photoURL } = req.body;
+        const { name, email, photoURL, branch } = req.body;
         if (!email) return res.status(400).json({ error: "Email is required" });
         const existing = await User.findOne({ email });
         if (existing) {
             return res.json({ success: true, user: existing, created: false });
         }
+        const allowedBranches = ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"];
         const user = new User({
             name: name || email.split("@")[0],
             email,
             photoURL: photoURL || "",
             role: "customer",
-            branch: "all",
+            branch: allowedBranches.includes(branch) ? branch : "all",
         });
         await user.save();
         res.status(201).json({ success: true, user, created: true });

@@ -67,44 +67,53 @@ function Users({ token, t }) {
         <div style={S.card}>
           <div style={S.cardHeader}><div style={S.cardTitle}>{t("teamMembers") || "Team Members"}</div></div>
           {loading ? <Spinner /> : (
-            <table className="gigo-table" style={S.table}>
-              <thead>
-                <tr>
-                  <th style={S.th}>{t("name") || "Name"}</th>
-                  <th style={S.th}>{t("role") || "Role"}</th>
-                  <th style={S.th}>{t("status")}</th>
-                  <th style={S.th}>{t("actions") || "Actions"}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.length === 0 && (
-                  <tr><td colSpan={4} style={{ ...S.td, textAlign: "center", color: C.textMuted }}>{t("noUsers") || "No users found"}</td></tr>
-                )}
-                {users.map((u, i) => (
-                  <tr key={i}>
-                    <td style={S.td}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ ...S.avatar, width: "28px", height: "28px", fontSize: "11px", flexShrink: 0 }}>
-                          {u.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: "600", fontSize: "13px" }}>{u.name}</div>
-                          <div style={{ fontSize: "11px", color: C.textMuted }}>{u.branch}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td style={{ ...S.td, color: C.textMuted, fontSize: "12px" }}>{u.role}</td>
-                    <td style={S.td}><span style={S.badge2(u.status || "active")}>{u.status || "active"}</span></td>
-                    <td style={S.td}>
-                      <div style={{ display: "flex", gap: "6px" }}>
-                        <button style={{ ...S.btn("ghost"), padding: "4px 8px", fontSize: "11px" }} onClick={() => openEdit(u)}>{t("edit") || "Edit"}</button>
-                        <button style={{ ...S.btn("danger"), padding: "4px 8px", fontSize: "11px", background: C.redDim, color: C.red, border: "none", borderRadius: "6px", cursor: "pointer" }} onClick={() => del(u._id)}>{t("del") || "Del"}</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            users.length === 0 ? (
+              <div style={{ ...S.td, textAlign: "center", color: C.textMuted, padding: "20px" }}>{t("noUsers") || "No users found"}</div>
+            ) : (
+              [...BRANCHES, "all"].map((branchName) => {
+                const branchUsers = users.filter(u => u.branch === branchName);
+                if (branchUsers.length === 0) return null;
+                return (
+                  <div key={branchName} style={{ marginBottom: "4px" }}>
+                    <div style={{ padding: "10px 20px", background: C.surfaceHover, fontSize: "12px", fontWeight: "700", color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.03em" }}>
+                      {branchName === "all" ? (t("allBranches") || "All Branches") : branchName} <span style={{ fontWeight: "400", textTransform: "none" }}>({branchUsers.length})</span>
+                    </div>
+                    <table className="gigo-table" style={S.table}>
+                      <thead>
+                        <tr>
+                          <th style={S.th}>{t("name") || "Name"}</th>
+                          <th style={S.th}>{t("role") || "Role"}</th>
+                          <th style={S.th}>{t("status")}</th>
+                          <th style={S.th}>{t("actions") || "Actions"}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {branchUsers.map((u, i) => (
+                          <tr key={i}>
+                            <td style={S.td}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <div style={{ ...S.avatar, width: "28px", height: "28px", fontSize: "11px", flexShrink: 0 }}>
+                                  {u.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+                                </div>
+                                <div style={{ fontWeight: "600", fontSize: "13px" }}>{u.name}</div>
+                              </div>
+                            </td>
+                            <td style={{ ...S.td, color: C.textMuted, fontSize: "12px" }}>{u.role}</td>
+                            <td style={S.td}><span style={S.badge2(u.status || "active")}>{u.status || "active"}</span></td>
+                            <td style={S.td}>
+                              <div style={{ display: "flex", gap: "6px" }}>
+                                <button style={{ ...S.btn("ghost"), padding: "4px 8px", fontSize: "11px" }} onClick={() => openEdit(u)}>{t("edit") || "Edit"}</button>
+                                <button style={{ ...S.btn("danger"), padding: "4px 8px", fontSize: "11px", background: C.redDim, color: C.red, border: "none", borderRadius: "6px", cursor: "pointer" }} onClick={() => del(u._id)}>{t("del") || "Del"}</button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })
+            )
           )}
         </div>
         <div style={S.card}>

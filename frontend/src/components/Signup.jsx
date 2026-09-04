@@ -1,13 +1,17 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { LanguageContext } from "../contexts/LanguageContext";
+import { BranchContext } from "../contexts/BranchContext";
+import { BRANCHES } from "../dashboard/dashboardUtils";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 
 const Signup = () => {
   const { createUser, loginwithGoogle } = useContext(AuthContext);
   const { t } = useContext(LanguageContext);
+  const branchCtx = useContext(BranchContext) || {};
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [branch, setBranch] = useState(branchCtx.branch || "");
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -27,7 +31,7 @@ const Signup = () => {
       await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
-        body: JSON.stringify({ name: name || user.displayName || email.split("@")[0], email: user.email, photoURL: user.photoURL || "", role: "customer" }),
+        body: JSON.stringify({ name: name || user.displayName || email.split("@")[0], email: user.email, photoURL: user.photoURL || "", role: "customer", branch }),
       });
       alert(t("signupSuccess"));
       navigate(from, { replace: true });
@@ -39,6 +43,10 @@ const Signup = () => {
   };
 
   const handleGoogleSignup = async () => {
+    if (!branch) {
+      setError(t("signupBranchRequired") || "Please select your branch before continuing.");
+      return;
+    }
     try {
       const result = await loginwithGoogle();
       const user = result.user;
@@ -46,7 +54,7 @@ const Signup = () => {
       await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
-        body: JSON.stringify({ name: user.displayName || user.email.split("@")[0], email: user.email, photoURL: user.photoURL || "", role: "customer" }),
+        body: JSON.stringify({ name: user.displayName || user.email.split("@")[0], email: user.email, photoURL: user.photoURL || "", role: "customer", branch }),
       });
       alert(`${t("signupWelcome")} ${user.displayName || user.email}`);
       navigate(from, { replace: true });
@@ -71,6 +79,10 @@ const Signup = () => {
             <input type="text" name="name" required placeholder={t("signupName")} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             <input type="email" name="email" required placeholder={t("signupEmail")} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             <input type="password" name="password" required placeholder={t("signupPassword")} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <select name="branch" required value={branch} onChange={(e) => setBranch(e.target.value)} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700">
+              <option value="" disabled>{t("signupSelectBranch") || "Select your branch"}</option>
+              {BRANCHES.map((b) => <option key={b} value={b}>{b}</option>)}
+            </select>
             <button type="submit" disabled={loading} className="w-full bg-blue-700 text-white py-3 rounded-lg hover:bg-blue-800 transition">
               {loading ? t("signupLoading") : t("signupSubmit")}
             </button>
