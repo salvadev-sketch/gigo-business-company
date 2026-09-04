@@ -61,6 +61,7 @@ const productSchema = new mongoose.Schema({
     branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Uganda", "DRC"], required: true },
     stock: { type: Number, default: 0, min: 0 },
     minStockLevel: { type: Number, default: 10 },
+    unitsPerCarton: { type: Number, enum: [12, 24], required: true, default: 12 },
 }, { timestamps: true });
 
 const Product = mongoose.model("Product", productSchema);
@@ -300,6 +301,7 @@ app.post("/seed/products", verifyToken, async (req, res) => {
                     branch: nextBranch(),
                     stock: 50,
                     minStockLevel: 10,
+                    unitsPerCarton: Math.random() < 0.5 ? 12 : 24,
                 });
             }
         }

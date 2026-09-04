@@ -18,7 +18,7 @@ function Products({ token, t }) {
   const [msg, setMsg] = useState(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
-  const [form, setForm] = useState({ productName: "", brandName: "", imageURL: "", category: "", description: "", price: "", branch: "", stock: "0", minStockLevel: "10" });
+  const [form, setForm] = useState({ productName: "", brandName: "", imageURL: "", category: "", description: "", price: "", branch: "", minStockLevel: "10", unitsPerCarton: "12" });
 
   const uploadImage = async (file) => {
     if (!file) return;
@@ -60,19 +60,19 @@ function Products({ token, t }) {
 
   const openAdd = () => {
     setEditing(null);
-    setForm({ productName: "", brandName: "", imageURL: "", category: "", description: "", price: "", branch: "", stock: "0", minStockLevel: "10" });
+    setForm({ productName: "", brandName: "", imageURL: "", category: "", description: "", price: "", branch: "", minStockLevel: "10", unitsPerCarton: "12" });
     setShowModal(true);
   };
   const openEdit = (p) => {
     setEditing(p);
-    setForm({ productName: p.productName, brandName: p.brandName, imageURL: p.imageURL, category: p.category, description: p.description, price: p.price, branch: p.branch, stock: p.stock || 0, minStockLevel: p.minStockLevel || 10 });
+    setForm({ productName: p.productName, brandName: p.brandName, imageURL: p.imageURL, category: p.category, description: p.description, price: p.price, branch: p.branch, minStockLevel: p.minStockLevel || 10, unitsPerCarton: p.unitsPerCarton || 12 });
     setShowModal(true);
   };
 
   const save = async () => {
     const method = editing ? "PATCH" : "POST";
     const url = editing ? `${API}/product/${editing._id}` : `${API}/upload-product`;
-    const body = { ...form, price: Number(form.price), stock: Number(form.stock), minStockLevel: Number(form.minStockLevel) };
+    const body = { ...form, price: Number(form.price), minStockLevel: Number(form.minStockLevel), unitsPerCarton: Number(form.unitsPerCarton) };
     const r = await fetch(url, { method, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(body) });
     const d = await r.json();
     if (d.success || d.product) { setMsg({ type: "success", text: editing ? t("productUpdated") || "Product updated!" : t("productAdded") || "Product added!" }); setShowModal(false); load(); }
@@ -123,6 +123,7 @@ function Products({ token, t }) {
                 <th style={S.th}>{t("product") || "Product"}</th>
                 <th style={S.th}>{t("category") || "Category"}</th>
                 <th style={S.th}>{t("stock") || "Stock"}</th>
+                <th style={S.th}>{t("cartonSize") || "Carton Size"}</th>
                 <th style={S.th}>{t("price") || "Price"}</th>
                 <th style={S.th}>{t("status")}</th>
                 <th style={S.th}>{t("actions") || "Actions"}</th>
@@ -130,7 +131,7 @@ function Products({ token, t }) {
             </thead>
             <tbody>
               {products.length === 0 && (
-                <tr><td colSpan={6} style={{ ...S.td, textAlign: "center", color: C.textMuted }}>{t("noProducts")}</td></tr>
+                <tr><td colSpan={7} style={{ ...S.td, textAlign: "center", color: C.textMuted }}>{t("noProducts")}</td></tr>
               )}
               {products.map((p, i) => {
                 const st = stockStatus(p);
@@ -149,6 +150,7 @@ function Products({ token, t }) {
                     </td>
                     <td style={S.td}><span style={S.pill(p.category)}>{p.category}</span></td>
                     <td style={{ ...S.td, fontWeight: "700", color: p.stock <= (p.minStockLevel || 10) ? C.red : C.text }}>{fmt(p.stock)}</td>
+                    <td style={S.td}>{p.unitsPerCarton || 12}</td>
                     <td style={{ ...S.td, color: C.accent, fontWeight: "600" }}>FRw {fmt(p.price)}</td>
                     <td style={S.td}><span style={S.badge2(st)}>{st}</span></td>
                     <td style={S.td}>
@@ -174,7 +176,6 @@ function Products({ token, t }) {
               { label: t("brandName") || "Brand Name", key: "brandName", type: "text" },
               { label: t("description") || "Description", key: "description", type: "text" },
               { label: t("price") || "Price (FRw)", key: "price", type: "number" },
-              { label: t("stockQty") || "Stock Quantity", key: "stock", type: "number" },
               { label: t("minStockLevel") || "Min Stock Level", key: "minStockLevel", type: "number" },
             ].map(f => (
               <div key={f.key} style={S.formRow}>
@@ -182,6 +183,13 @@ function Products({ token, t }) {
                 <input style={S.input} type={f.type} placeholder={f.placeholder || ""} value={form[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} />
               </div>
             ))}
+            <div style={S.formRow}>
+              <label style={S.formLabel}>{t("unitsPerCarton") || "Units Per Carton"}</label>
+              <select style={S.select} value={form.unitsPerCarton} onChange={e => setForm({ ...form, unitsPerCarton: e.target.value })}>
+                <option value="12">12</option>
+                <option value="24">24</option>
+              </select>
+            </div>
             <div style={S.formRow}>
               <label style={S.formLabel}>{t("category") || "Category"}</label>
               <select style={S.select} value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
