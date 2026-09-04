@@ -1,24 +1,27 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { LanguageContext } from "../contexts/LanguageContext";
+import { BranchContext } from "../contexts/BranchContext";
 import { API } from "../dashboard/dashboardUtils";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=600";
 
 const Banner = () => {
   const { t } = useContext(LanguageContext);
+  const { branch } = useContext(BranchContext);
   const [heroImages, setHeroImages] = useState([FALLBACK_IMAGE]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    fetch(`${API}/all-products?limit=5`)
+    if (!branch) return;
+    fetch(`${API}/all-products?limit=5&branch=${encodeURIComponent(branch)}`)
       .then(r => r.json())
       .then(d => {
         const urls = (d.products || []).map(p => p.imageURL).filter(Boolean);
-        if (urls.length > 0) setHeroImages(urls);
+        setHeroImages(urls.length > 0 ? urls : [FALLBACK_IMAGE]);
       })
       .catch(() => {});
-  }, []);
+  }, [branch]);
 
   useEffect(() => {
     if (heroImages.length <= 1) return;

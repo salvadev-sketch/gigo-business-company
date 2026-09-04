@@ -306,6 +306,9 @@ export const translations = {
     usersCount: "abakoresha",
     weeklyReport: "Raporo y'Icyumweru",
     weeklyReportDesc: "Incamake y'iminsi 7 ishize",
+    chooseBranchTitle: "Hitamo Ishami Riri Hafi Yawe",
+    chooseBranchSubtitle: "Bizadufasha kukwereka ibicuruzwa n'ibiciro biri ku ishami wahisemo.",
+    chooseBranchConfirm: "Emeza",
   },
 
   // ── English ─────────────────────────────────────────
@@ -614,6 +617,9 @@ export const translations = {
     usersCount: "users",
     weeklyReport: "Weekly Report",
     weeklyReportDesc: "Last 7 days summary",
+    chooseBranchTitle: "Choose Your Nearest Branch",
+    chooseBranchSubtitle: "This helps us show you the products and prices available at your branch.",
+    chooseBranchConfirm: "Confirm",
   },
 
   // ── French ──────────────────────────────────────────
@@ -922,6 +928,9 @@ export const translations = {
     usersCount: "utilisateurs",
     weeklyReport: "Rapport Hebdomadaire",
     weeklyReportDesc: "Résumé des 7 derniers jours",
+    chooseBranchTitle: "Choisissez Votre Branch la Plus Proche",
+    chooseBranchSubtitle: "Cela nous aide à vous montrer les produits et les prix disponibles dans votre branch.",
+    chooseBranchConfirm: "Confirmer",
   },
 };
 

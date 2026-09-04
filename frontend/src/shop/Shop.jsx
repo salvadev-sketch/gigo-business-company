@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../currency";
+import { BranchContext } from "../contexts/BranchContext";
+import { LanguageContext } from "../contexts/LanguageContext";
 
 const CATEGORY_ORDER = ["Alcoholic", "Non-Alcoholic", "Food", "Other"];
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { branch } = useContext(BranchContext);
+  const { t } = useContext(LanguageContext);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/all-products`)
+    if (!branch) return;
+    setLoading(true);
+    fetch(`${import.meta.env.VITE_API_URL}/all-products?branch=${encodeURIComponent(branch)}`)
       .then((res) => res.json())
       .then((data) => { setProducts(data.products || []); setLoading(false); })
       .catch(() => setLoading(false));
-  }, []);
+  }, [branch]);
 
   const grouped = CATEGORY_ORDER.reduce((acc, cat) => {
     acc[cat] = products.filter(p => p.category === cat);
@@ -74,9 +80,9 @@ const Shop = () => {
 
   return (
     <div className="mt-28 px-4 lg:px-24 pb-16">
-      <h2 className="text-5xl font-bold text-center mb-14">All Products Are Here</h2>
+      <h2 className="text-5xl font-bold text-center mb-14">{branch ? `${t("products") || "Products"} — ${branch}` : "All Products Are Here"}</h2>
 
-      {loading ? (
+      {!branch ? null : loading ? (
         <div className="text-center py-20 text-gray-400">Loading products...</div>
       ) : products.length === 0 ? (
         <div className="text-center py-20 text-gray-400">No products found.</div>
