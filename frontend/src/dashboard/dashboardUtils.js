@@ -16,6 +16,7 @@ export const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep
 export const BRANCHES = ["Bujumbura HQ","Kampala","Uganda","DRC"];
 export const ROLES = ["owner","branch_manager","sales_manager","warehouse_manager","cashier","employee"];
 export const CATEGORIES = ["Alcoholic","Non-Alcoholic","Food","Other"];
+export { getCurrency, formatPrice, DEFAULT_CURRENCY } from "../currency";
 
 export const fmt = (n) => new Intl.NumberFormat("fr-RW").format(Math.round(n || 0));
 export const fmtM = (n) => {

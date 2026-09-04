@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useContext } from "react";
 import { LanguageContext } from "../contexts/LanguageContext";
-import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES } from "./dashboardUtils";
+import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES, formatPrice } from "./dashboardUtils";
 import Spinner from "./Spinner";
 
 function useT() {
@@ -91,7 +91,7 @@ function Orders({ token, t }) {
                     <div style={{ fontSize: "11px", color: C.textMuted }}>{o.customerEmail}</div>
                   </td>
                   <td style={{ ...S.td, color: C.textMuted, fontSize: "12px" }}>{o.branch}</td>
-                  <td style={{ ...S.td, fontWeight: "700", color: C.accent }}>FRw {fmt(o.totalAmount)}</td>
+                  <td style={{ ...S.td, fontWeight: "700", color: C.accent }}>{formatPrice(o.totalAmount, o.branch)}</td>
                   <td style={S.td}><span style={S.badge2(o.status)}>{o.status}</span></td>
                   <td style={S.td}><span style={S.badge2(o.paymentStatus)}>{o.paymentStatus}</span></td>
                   <td style={{ ...S.td, fontSize: "11px", color: C.textMuted }}>{timeAgo(o.createdAt)}</td>

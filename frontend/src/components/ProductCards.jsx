@@ -4,6 +4,7 @@ import { FaCartShopping } from "react-icons/fa6";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
+import { formatPrice } from "../currency";
 
 const ProductCards = ({ headline, products }) => {
   return (
@@ -42,7 +43,7 @@ const ProductCards = ({ headline, products }) => {
                 </h3>
                 <p>{product.category}</p>
                 <div>
-                  <p>{product.price} BIF</p>
+                  <p>{formatPrice(product.price, product.branch)}</p>
                 </div>
               </div>
             </Link>

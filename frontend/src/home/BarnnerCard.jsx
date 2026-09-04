@@ -2,32 +2,33 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
 import { EffectCards, Autoplay } from 'swiper/modules';
+import { DEFAULT_CURRENCY } from '../currency';
 
 const SLIDES = [
   {
     img: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=500",
     name: "Jack Daniel's Whiskey",
-    price: "FRw 45,000",
+    price: "45,000",
   },
   {
     img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500",
     name: "Premium Red Wine",
-    price: "FRw 28,000",
+    price: "28,000",
   },
   {
     img: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=500",
     name: "Heineken Beer",
-    price: "FRw 5,000",
+    price: "5,000",
   },
   {
     img: "https://images.unsplash.com/photo-1474722883778-792e7990302f?w=500",
     name: "Vodka Premium",
-    price: "FRw 32,000",
+    price: "32,000",
   },
   {
     img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
     name: "Champagne",
-    price: "FRw 65,000",
+    price: "65,000",
   },
 ];
 
@@ -58,7 +59,7 @@ const BarnnerCard = () => {
                 {slide.name}
               </div>
               <div style={{ fontWeight: "800", fontSize: "16px", color: "#FF6B35" }}>
-                {slide.price}
+                {DEFAULT_CURRENCY} {slide.price}
               </div>
             </div>
           </SwiperSlide>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useContext } from "react";
 import { LanguageContext } from "../contexts/LanguageContext";
-import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES } from "./dashboardUtils";
+import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES, getCurrency } from "./dashboardUtils";
 import Spinner from "./Spinner";
 
 function useT() {
@@ -67,7 +67,7 @@ function Branches({ token, t }) {
                 {[
                   { label: t("staff") || "Staff", value: b.stats?.staffCount ?? 0 },
                   { label: t("orders"), value: fmt(b.stats?.orderCount ?? 0) },
-                  { label: t("revenue") || "Revenue", value: `FRw ${fmtM(b.stats?.totalRevenue ?? 0)}` },
+                  { label: t("revenue") || "Revenue", value: `${getCurrency(b.name)} ${fmtM(b.stats?.totalRevenue ?? 0)}` },
                 ].map((s, j) => (
                   <div key={j} style={{ textAlign: "center", background: C.bg, borderRadius: "8px", padding: "10px 6px" }}>
                     <div style={{ fontWeight: "800", fontSize: "15px", color: j === 2 ? C.green : C.text }}>{s.value}</div>

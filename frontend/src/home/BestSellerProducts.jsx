@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { LanguageContext } from "../contexts/LanguageContext";
+import { formatPrice } from "../currency";
 
 const CATEGORIES = ["Alcoholic", "Non-Alcoholic", "Food", "Other"];
 
@@ -76,7 +77,7 @@ const ProductRow = ({ category, products, t }) => {
                   <p style={{ fontSize: "11px", color: "#aaa", marginBottom: "12px" }}>{product.brandName}</p>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontWeight: "900", fontSize: "17px", color: "#FF6B35" }}>
-                      BIF {product.price?.toLocaleString()}
+                      {formatPrice(product.price, product.branch)}
                     </span>
                     <span style={{
                       background: "#FFF3E0", color: "#FF6B35", padding: "6px 14px", borderRadius: "50px",

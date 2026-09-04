@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { formatPrice } from "../currency";
 
 const CATEGORY_ORDER = ["Alcoholic", "Non-Alcoholic", "Food", "Other"];
 
@@ -55,7 +56,7 @@ const Shop = () => {
             {product.productName}
           </h3>
           <span className="text-white font-bold text-base drop-shadow-sm">
-            {product.price?.toLocaleString()} BIF
+            {formatPrice(product.price, product.branch)}
           </span>
         </div>
       </div>

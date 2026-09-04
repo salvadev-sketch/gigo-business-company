@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { LanguageContext } from "../contexts/LanguageContext";
+import { formatPrice } from "../currency";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -231,7 +232,7 @@ const Orders = () => {
                         <span style={{ color: C.textMuted, fontSize: "12px", marginLeft: "8px" }}>x{p.quantity}</span>
                       </div>
                       <span style={{ color: C.accent, fontWeight: "700", fontSize: "13px" }}>
-                        {(p.price * p.quantity).toLocaleString()} BIF
+                        {formatPrice(p.price * p.quantity, order.branch)}
                       </span>
                     </div>
                   ))}
@@ -240,7 +241,7 @@ const Orders = () => {
                 {/* Footer */}
                 <div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
                   <div style={{ fontWeight: "800", fontSize: "16px", color: C.accent }}>
-                    Igiteranyo: {order.totalAmount.toLocaleString()} BIF
+                    Igiteranyo: {formatPrice(order.totalAmount, order.branch)}
                   </div>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
 
@@ -316,7 +317,7 @@ const Orders = () => {
               <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${C.border}` }}>
                 <div>
                   <div style={{ fontWeight: "600", fontSize: "13px" }}>{p.productName}</div>
-                  <div style={{ fontSize: "11px", color: C.textMuted }}>{p.price.toLocaleString()} BIF / rimwe</div>
+                  <div style={{ fontSize: "11px", color: C.textMuted }}>{formatPrice(p.price, editOrder.branch)} / rimwe</div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <button onClick={() => handleEditQty(i, p.quantity - 1)}
@@ -328,7 +329,7 @@ const Orders = () => {
               </div>
             ))}
             <div style={{ marginTop: "16px", fontWeight: "800", fontSize: "15px", color: C.accent, textAlign: "right" }}>
-              Igiteranyo: {editProducts.reduce((s, p) => s + p.price * p.quantity, 0).toLocaleString()} BIF
+              Igiteranyo: {formatPrice(editProducts.reduce((s, p) => s + p.price * p.quantity, 0), editOrder.branch)}
             </div>
             <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "20px" }}>
               <button onClick={() => setShowEdit(false)}
@@ -372,7 +373,7 @@ const Orders = () => {
                 style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "8px", marginBottom: "14px", background: C.bg }} />
             )}
             <div style={{ fontSize: "12px", color: C.textMuted, marginBottom: "16px" }}>
-              Igiteranyo: <strong style={{ color: C.accent }}>{paymentOrder.totalAmount.toLocaleString()} BIF</strong>
+              Igiteranyo: <strong style={{ color: C.accent }}>{formatPrice(paymentOrder.totalAmount, paymentOrder.branch)}</strong>
             </div>
             <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
               <button onClick={() => setShowPayment(false)}

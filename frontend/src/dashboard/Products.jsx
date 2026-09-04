@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useContext, useRef } from "react";
 import { LanguageContext } from "../contexts/LanguageContext";
-import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES } from "./dashboardUtils";
+import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES, formatPrice } from "./dashboardUtils";
 import Spinner from "./Spinner";
 
 function useT() {
@@ -151,7 +151,7 @@ function Products({ token, t }) {
                     <td style={S.td}><span style={S.pill(p.category)}>{p.category}</span></td>
                     <td style={{ ...S.td, fontWeight: "700", color: p.stock <= (p.minStockLevel || 10) ? C.red : C.text }}>{fmt(p.stock)}</td>
                     <td style={S.td}>{p.unitsPerCarton || 12}</td>
-                    <td style={{ ...S.td, color: C.accent, fontWeight: "600" }}>FRw {fmt(p.price)}</td>
+                    <td style={{ ...S.td, color: C.accent, fontWeight: "600" }}>{formatPrice(p.price, p.branch)}</td>
                     <td style={S.td}><span style={S.badge2(st)}>{st}</span></td>
                     <td style={S.td}>
                       <div style={{ display: "flex", gap: "6px" }}>
@@ -175,7 +175,7 @@ function Products({ token, t }) {
               { label: t("productName") || "Product Name", key: "productName", type: "text" },
               { label: t("brandName") || "Brand Name", key: "brandName", type: "text" },
               { label: t("description") || "Description", key: "description", type: "text" },
-              { label: t("price") || "Price (FRw)", key: "price", type: "number" },
+              { label: t("price") || "Price", key: "price", type: "number" },
               { label: t("minStockLevel") || "Min Stock Level", key: "minStockLevel", type: "number" },
             ].map(f => (
               <div key={f.key} style={S.formRow}>

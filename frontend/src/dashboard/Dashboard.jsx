@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useContext } from "react";
 import { LanguageContext } from "../contexts/LanguageContext";
-import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES } from "./dashboardUtils";
+import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES, getCurrency, DEFAULT_CURRENCY } from "./dashboardUtils";
 import Spinner from "./Spinner";
 
 function useT() {
@@ -34,7 +34,7 @@ function Dashboard({ token, t, language }) {
   }));
 
   const kpiCards = [
-    { label: t("revenueThisMonth"), value: `FRw ${fmtM(kpis.revenueThisMonth || 0)}`, delta: kpis.revenueDelta ? `${kpis.revenueDelta > 0 ? "+" : ""}${kpis.revenueDelta}% vs last month` : t("noPrevData"), up: (kpis.revenueDelta || 0) >= 0, icon: "◈", color: C.accent },
+    { label: t("revenueThisMonth"), value: `${DEFAULT_CURRENCY} ${fmtM(kpis.revenueThisMonth || 0)}`, delta: kpis.revenueDelta ? `${kpis.revenueDelta > 0 ? "+" : ""}${kpis.revenueDelta}% vs last month` : t("noPrevData"), up: (kpis.revenueDelta || 0) >= 0, icon: "◈", color: C.accent },
     { label: t("ordersThisMonth"), value: fmt(kpis.ordersThisMonth || 0), delta: kpis.ordersDelta ? `${kpis.ordersDelta > 0 ? "+" : ""}${kpis.ordersDelta}% vs last month` : t("noPrevData"), up: (kpis.ordersDelta || 0) >= 0, icon: "▦", color: C.green },
     { label: t("totalProducts"), value: fmt(kpis.totalProducts || 0), delta: t("registered"), up: true, icon: "◫", color: C.blue },
     { label: t("lowStockAlerts"), value: fmt(kpis.lowStockAlerts || 0), delta: (kpis.lowStockAlerts || 0) > 0 ? t("needsAttention") : t("allGood"), up: (kpis.lowStockAlerts || 0) === 0, icon: "⚠", color: C.red },
@@ -86,7 +86,7 @@ function Dashboard({ token, t, language }) {
                     <div style={{ fontSize: "11px", color: C.textMuted }}>{timeAgo(o.createdAt)}</div>
                   </td>
                   <td style={{ ...S.td, color: C.textMuted, fontSize: "12px" }}>{o.branch}</td>
-                  <td style={{ ...S.td, fontWeight: "700", color: C.accent }}>FRw {fmt(o.totalAmount)}</td>
+                  <td style={{ ...S.td, fontWeight: "700", color: C.accent }}>{getCurrency(o.branch)} {fmt(o.totalAmount)}</td>
                   <td style={S.td}><span style={S.badge2(o.status)}>{o.status}</span></td>
                 </tr>
               ))}
@@ -107,7 +107,7 @@ function Dashboard({ token, t, language }) {
               <div key={i} style={{ padding: "12px 20px", borderBottom: `1px solid ${C.border}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
                   <span style={{ fontWeight: "600", fontSize: "13px" }}>{p._id}</span>
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: C.accent }}>FRw {fmtM(p.totalRevenue)}</span>
+                  <span style={{ fontSize: "12px", fontWeight: "700", color: C.accent }}>{DEFAULT_CURRENCY} {fmtM(p.totalRevenue)}</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <div style={S.chartBar(Math.round((p.totalSold / maxSold) * 100), C.accent)} />
@@ -134,7 +134,7 @@ function Dashboard({ token, t, language }) {
                 {chartData.map((d, i) => (
                   <div key={i} style={{ flex: 1, textAlign: "center" }}>
                     <div style={{ fontWeight: "700", fontSize: "12px", color: i === chartData.length - 1 ? C.accent : C.text }}>
-                      FRw {fmtM(d.total)}
+                      {DEFAULT_CURRENCY} {fmtM(d.total)}
                     </div>
                   </div>
                 ))}

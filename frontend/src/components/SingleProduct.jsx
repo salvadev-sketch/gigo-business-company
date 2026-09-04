@@ -2,6 +2,7 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { LanguageContext } from "../contexts/LanguageContext";
 import { AuthContext } from "../contexts/AuthContext";
+import { formatPrice } from "../currency";
 
 const SingleProduct = () => {
   const product = useLoaderData();
@@ -83,7 +84,7 @@ const SingleProduct = () => {
           <div>
             <h1 className="text-4xl font-bold text-blue-700 mb-4">{product?.productName}</h1>
             <p className="text-gray-600 mb-4">{t("category")}: {product?.category}</p>
-            <p className="text-2xl font-semibold text-green-600 mb-4">{product?.price} BIF</p>
+            <p className="text-2xl font-semibold text-green-600 mb-4">{formatPrice(product?.price, product?.branch)}</p>
             <p className="text-gray-700 mb-6">{product?.description}</p>
 
             {!showForm ? (
@@ -127,7 +128,7 @@ const SingleProduct = () => {
                 </div>
 
                 <p className="text-lg font-semibold">
-                  Total: {product.price * quantity} BIF
+                  Total: {formatPrice(product.price * quantity, product?.branch)}
                 </p>
 
                 {error && <p className="text-red-600 text-sm">{error}</p>}

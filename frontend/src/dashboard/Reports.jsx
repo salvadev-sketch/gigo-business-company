@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useContext } from "react";
 import { LanguageContext } from "../contexts/LanguageContext";
-import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES } from "./dashboardUtils";
+import { API, C, S, fmt, fmtM, timeAgo, stockStatus, BRANCHES, CATEGORIES, ROLES, MONTH_NAMES, getCurrency, DEFAULT_CURRENCY } from "./dashboardUtils";
 import Spinner from "./Spinner";
 
 function useT() {
@@ -67,7 +67,7 @@ function Reports({ token, t }) {
         <div style={{ ...S.card, marginBottom: "16px" }}>
           <div style={S.cardHeader}><div style={S.cardTitle}>{t("dailyReport") || "Daily Report"} — {t("today") || "Today"}</div></div>
           <div style={{ padding: "20px", display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "16px" }}>
-            <div style={{ textAlign: "center" }}><div style={{ fontSize: "24px", fontWeight: "800", color: C.accent }}>FRw {fmtM(daily.summary?.totalRevenue || 0)}</div><div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px", textTransform: "uppercase" }}>{t("totalRevenue") || "Total Revenue"}</div></div>
+            <div style={{ textAlign: "center" }}><div style={{ fontSize: "24px", fontWeight: "800", color: C.accent }}>{DEFAULT_CURRENCY} {fmtM(daily.summary?.totalRevenue || 0)}</div><div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px", textTransform: "uppercase" }}>{t("totalRevenue") || "Total Revenue"}</div></div>
             <div style={{ textAlign: "center" }}><div style={{ fontSize: "24px", fontWeight: "800", color: C.green }}>{daily.summary?.totalOrders || 0}</div><div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px", textTransform: "uppercase" }}>{t("totalOrders") || "Total Orders"}</div></div>
             <div style={{ textAlign: "center" }}><div style={{ fontSize: "24px", fontWeight: "800", color: C.blue }}>{Object.keys(daily.summary?.byBranch || {}).length}</div><div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px", textTransform: "uppercase" }}>{t("activeBranches") || "Active Branches"}</div></div>
           </div>
@@ -79,7 +79,7 @@ function Reports({ token, t }) {
                   <tr key={i}>
                     <td style={{ ...S.td, fontWeight: "600" }}>{branch}</td>
                     <td style={S.td}>{d.orderCount}</td>
-                    <td style={{ ...S.td, color: C.accent, fontWeight: "700" }}>FRw {fmt(d.revenue)}</td>
+                    <td style={{ ...S.td, color: C.accent, fontWeight: "700" }}>{getCurrency(branch)} {fmt(d.revenue)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -92,7 +92,7 @@ function Reports({ token, t }) {
         <div style={{ ...S.card, marginBottom: "16px" }}>
           <div style={S.cardHeader}><div style={S.cardTitle}>{t("monthlyReport") || "Monthly Report"} — {MONTH_NAMES[(monthly.period?.month || 1) - 1]} {monthly.period?.year}</div></div>
           <div style={{ padding: "20px", display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "16px", marginBottom: "16px" }}>
-            <div style={{ textAlign: "center" }}><div style={{ fontSize: "24px", fontWeight: "800", color: C.accent }}>FRw {fmtM(monthly.summary?.totalRevenue || 0)}</div><div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px", textTransform: "uppercase" }}>{t("totalRevenue") || "Total Revenue"}</div></div>
+            <div style={{ textAlign: "center" }}><div style={{ fontSize: "24px", fontWeight: "800", color: C.accent }}>{DEFAULT_CURRENCY} {fmtM(monthly.summary?.totalRevenue || 0)}</div><div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px", textTransform: "uppercase" }}>{t("totalRevenue") || "Total Revenue"}</div></div>
             <div style={{ textAlign: "center" }}><div style={{ fontSize: "24px", fontWeight: "800", color: C.green }}>{monthly.summary?.totalOrders || 0}</div><div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px", textTransform: "uppercase" }}>{t("totalOrders") || "Total Orders"}</div></div>
             <div style={{ textAlign: "center" }}><div style={{ fontSize: "24px", fontWeight: "800", color: C.blue }}>{monthly.summary?.paidOrders || 0}</div><div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px", textTransform: "uppercase" }}>{t("paidOrders") || "Paid Orders"}</div></div>
           </div>
@@ -106,7 +106,7 @@ function Reports({ token, t }) {
                     <tr key={i}>
                       <td style={{ ...S.td, fontWeight: "600" }}>{p.name}</td>
                       <td style={S.td}>{p.sold}</td>
-                      <td style={{ ...S.td, color: C.accent, fontWeight: "700" }}>FRw {fmt(p.revenue)}</td>
+                      <td style={{ ...S.td, color: C.accent, fontWeight: "700" }}>{DEFAULT_CURRENCY} {fmt(p.revenue)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -134,7 +134,7 @@ function Reports({ token, t }) {
                 <tr key={i}>
                   <td style={{ ...S.td, fontWeight: "600" }}>{b.branch}</td>
                   <td style={S.td}>{b.ordersThisMonth}</td>
-                  <td style={{ ...S.td, color: C.accent, fontWeight: "700" }}>FRw {fmt(b.revenueThisMonth)}</td>
+                  <td style={{ ...S.td, color: C.accent, fontWeight: "700" }}>{getCurrency(b.branch)} {fmt(b.revenueThisMonth)}</td>
                   <td style={S.td}>{b.activeStaff}</td>
                   <td style={S.td}>
                     {b.lowStockAlerts > 0
