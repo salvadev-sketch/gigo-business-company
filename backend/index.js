@@ -58,7 +58,7 @@ const productSchema = new mongoose.Schema({
     category: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Uganda", "DRC"], required: true },
+    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"], required: true },
     stock: { type: Number, default: 0, min: 0 },
     minStockLevel: { type: Number, default: 10 },
     unitsPerCarton: { type: Number, enum: [12, 24], required: true, default: 12 },
@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, default: "" },
     photoURL: { type: String },
     role: { type: String, enum: ["owner", "branch_manager", "sales_manager", "warehouse_manager", "cashier", "employee", "customer"], default: "customer" },
-    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Uganda", "DRC", "all"], default: "all" },
+    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "DRC", "all"], default: "all" },
     status: { type: String, enum: ["active", "inactive"], default: "active" },
 }, { timestamps: true });
 
@@ -83,7 +83,7 @@ const User = mongoose.model("User", userSchema);
 const orderSchema = new mongoose.Schema({
     customerName: { type: String, required: true },
     customerEmail: { type: String, required: true },
-    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Uganda", "DRC"], required: true },
+    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"], required: true },
     products: [
         {
             productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
@@ -102,7 +102,7 @@ const Order = mongoose.model("Order", orderSchema);
 
 // ── Branch ────────────────────────────────────────────────────────────────────
 const branchSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true, enum: ["Bujumbura HQ", "Kampala", "Uganda", "DRC"] },
+    name: { type: String, required: true, unique: true, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"] },
     managerName: { type: String, default: "" },
     managerEmail: { type: String, default: "" },
     location: { type: String, default: "" },
@@ -233,7 +233,7 @@ app.post("/seed/products", verifyToken, async (req, res) => {
             return res.status(400).json({ error: `Products already exist (${existing}). Remove them first if you want to reseed.` });
         }
 
-        const BRANCHES = ["Bujumbura HQ", "Kampala", "Uganda", "DRC"];
+        const BRANCHES = ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"];
         const placeholder = (name) => `https://placehold.co/400x400?text=${encodeURIComponent(name)}`;
         const nextBranch = (() => { let i = 0; return () => BRANCHES[i++ % BRANCHES.length]; })();
 
@@ -864,7 +864,7 @@ app.get("/report/weekly", verifyToken, async (req, res) => {
         }
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        const branches = (user.role === "owner" || user.branch === "all") ? ["Bujumbura HQ", "Kampala", "Uganda", "DRC"] : [user.branch];
+        const branches = (user.role === "owner" || user.branch === "all") ? ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"] : [user.branch];
 
         const report = {};
         for (const branch of branches) {
@@ -889,7 +889,7 @@ app.get("/report/branch-performance", verifyToken, async (req, res) => {
         }
         const now = new Date();
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const branches = ["Bujumbura HQ", "Kampala", "Uganda", "DRC"];
+        const branches = ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"];
 
         const performance = await Promise.all(branches.map(async (branch) => {
             const [orders, revenue, staff, lowStock] = await Promise.all([

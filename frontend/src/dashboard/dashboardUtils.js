@@ -13,7 +13,7 @@ export const C = {
 };
 
 export const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-export const BRANCHES = ["Bujumbura HQ","Kampala","Uganda","DRC"];
+export const BRANCHES = ["Bujumbura HQ","Kampala","Nairobi","DRC"];
 export const ROLES = ["owner","branch_manager","sales_manager","warehouse_manager","cashier","employee"];
 export const CATEGORIES = ["Alcoholic","Non-Alcoholic","Food","Other"];
 export { getCurrency, formatPrice, DEFAULT_CURRENCY } from "../currency";
