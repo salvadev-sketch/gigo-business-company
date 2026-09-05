@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const { verifyToken } = require('../middleware/verifyToken');
 
@@ -43,8 +44,19 @@ router.patch("/users/:id", verifyToken, async (req, res) => {
         if (!dbUser || dbUser.role !== "owner") {
             return res.status(403).json({ error: "Forbidden - insufficient role" });
         }
+        const updates = { ...req.body };
+        // This route accepts a generic body for editing role/branch/status; if
+        // a plaintext password ever comes through it (e.g. a future form
+        // field), it must be hashed here rather than stored as-is, or
+        // bcrypt.compare in /auth/login will never match it again.
+        if (updates.password) {
+            if (updates.password.length < 6) {
+                return res.status(400).json({ error: "Password must be at least 6 characters" });
+            }
+            updates.password = await bcrypt.hash(updates.password, 10);
+        }
         const updatedUser = await User.findByIdAndUpdate(
-            req.params.id, { $set: req.body }, { new: true, runValidators: true }
+            req.params.id, { $set: updates }, { new: true, runValidators: true }
         ).select("-password");
         if (!updatedUser) return res.status(404).json({ error: "User not found" });
         res.json({ success: true, user: updatedUser });
