@@ -15,7 +15,7 @@ function Users({ token, t }) {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [msg, setMsg] = useState(null);
-  const [form, setForm] = useState({ role: "employee", branch: "all", status: "active" });
+  const [form, setForm] = useState({ role: "employee", branch: "all", status: "active", newPassword: "" });
 
   const load = useCallback(() => {
     setLoading(true);
@@ -27,10 +27,18 @@ function Users({ token, t }) {
 
   useEffect(() => { load(); }, [load]);
 
-  const openEdit = (u) => { setEditing(u); setForm({ role: u.role, branch: u.branch, status: u.status || "active" }); setShowModal(true); };
+  const openEdit = (u) => { setEditing(u); setForm({ role: u.role, branch: u.branch, status: u.status || "active", newPassword: "" }); setShowModal(true); };
 
   const save = async () => {
-    const r = await fetch(`${API}/users/${editing._id}`, { method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(form) });
+    if (form.newPassword && form.newPassword.length < 6) {
+      setMsg({ type: "error", text: t("passwordTooShort") || "New password must be at least 6 characters" });
+      return;
+    }
+    // Only send a password field at all if the owner actually typed one —
+    // leaving it blank must never overwrite the user's existing password.
+    const { newPassword, ...rest } = form;
+    const body = newPassword ? { ...rest, password: newPassword } : rest;
+    const r = await fetch(`${API}/users/${editing._id}`, { method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(body) });
     const d = await r.json();
     if (d.success) { setMsg({ type: "success", text: t("userUpdated") || "User updated!" }); setShowModal(false); load(); }
     else setMsg({ type: "error", text: d.error || "Failed" });
@@ -155,6 +163,19 @@ function Users({ token, t }) {
                 <option value="active">{t("active") || "Active"}</option>
                 <option value="inactive">{t("inactive") || "Inactive"}</option>
               </select>
+            </div>
+            <div style={S.formRow}>
+              <label style={S.formLabel}>{t("resetPassword") || "Reset Password"}</label>
+              <input
+                type="password"
+                style={S.select}
+                placeholder={t("leaveBlankKeepPassword") || "Leave blank to keep current password"}
+                value={form.newPassword}
+                onChange={e => setForm({ ...form, newPassword: e.target.value })}
+              />
+              <div style={{ fontSize: "11px", color: C.textMuted, marginTop: "4px" }}>
+                {t("resetPasswordHint") || "Only fill this in if the user is locked out and needs a new password set for them."}
+              </div>
             </div>
             <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "8px" }}>
               <button style={S.btn("ghost")} onClick={() => setShowModal(false)}>{t("cancel") || "Cancel"}</button>
