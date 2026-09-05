@@ -1,19 +1,21 @@
-const { firebaseAuth } = require('../config/firebase');
+const jwt = require('jsonwebtoken');
 
-// ── Firebase ID token verify ──────────────────────────────────────────────────
-// NOTE: replaced by JWT verification in Phase B.
-const verifyToken = async (req, res, next) => {
+// ── JWT access token verify ────────────────────────────────────────────────────
+// Replaces Firebase ID-token verification (Phase B).
+// Expects "Authorization: Bearer <accessToken>" where accessToken was issued
+// by POST /auth/login or POST /auth/refresh and signed with JWT_ACCESS_SECRET.
+const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({ error: "Unauthorized - no token" });
     }
-    const idToken = authHeader.split(" ")[1];
+    const accessToken = authHeader.split(" ")[1];
     try {
-        const decoded = await firebaseAuth.verifyIdToken(idToken);
-        req.user = { uid: decoded.uid, email: decoded.email }; // role/branch are NOT in the Firebase token; look up in MongoDB per route
+        const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+        req.user = { id: decoded.id, email: decoded.email }; // role/branch are NOT in the token; look up in MongoDB per route
         next();
     } catch (error) {
-        return res.status(401).json({ error: "Unauthorized - invalid token" });
+        return res.status(401).json({ error: "Unauthorized - invalid or expired token" });
     }
 };
 
