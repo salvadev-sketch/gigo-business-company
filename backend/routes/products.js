@@ -51,7 +51,7 @@ router.post("/seed/products", verifyToken, async (req, res) => {
             return res.status(400).json({ error: `Products already exist (${existing}). Remove them first if you want to reseed.` });
         }
 
-        const BRANCHES = ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"];
+        const BRANCHES = ["Bujumbura HQ", "Kampala", "Nairobi", "RDC"];
         const placeholder = (name) => `https://placehold.co/400x400?text=${encodeURIComponent(name)}`;
         const nextBranch = (() => { let i = 0; return () => BRANCHES[i++ % BRANCHES.length]; })();
 

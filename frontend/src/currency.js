@@ -3,7 +3,7 @@ export const BRANCH_CURRENCIES = {
   "Bujumbura HQ": "BIF",
   "Kampala": "UGX",
   "Nairobi": "KES",
-  "DRC": "CDF",
+  "RDC": "CDF",
 };
 
 export const DEFAULT_CURRENCY = "BIF";

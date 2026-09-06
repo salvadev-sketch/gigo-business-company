@@ -79,7 +79,7 @@ router.get("/report/weekly", verifyToken, async (req, res) => {
         }
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        const branches = (user.role === "owner" || user.branch === "all") ? ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"] : [user.branch];
+        const branches = (user.role === "owner" || user.branch === "all") ? ["Bujumbura HQ", "Kampala", "Nairobi", "RDC"] : [user.branch];
 
         const report = {};
         for (const branch of branches) {
@@ -104,7 +104,7 @@ router.get("/report/branch-performance", verifyToken, async (req, res) => {
         }
         const now = new Date();
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const branches = ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"];
+        const branches = ["Bujumbura HQ", "Kampala", "Nairobi", "RDC"];
 
         const performance = await Promise.all(branches.map(async (branch) => {
             const [orders, revenue, staff, lowStock] = await Promise.all([

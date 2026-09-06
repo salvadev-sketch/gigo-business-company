@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     category: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"], required: true },
+    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "RDC"], required: true },
     stock: { type: Number, default: 0, min: 0 },
     minStockLevel: { type: Number, default: 10 },
     unitsPerCarton: { type: Number, enum: [12, 24], required: true, default: 12 },

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({
     customerName: { type: String, required: true },
     customerEmail: { type: String, required: true },
-    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"], required: true },
+    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "RDC"], required: true },
     products: [
         {
             productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },

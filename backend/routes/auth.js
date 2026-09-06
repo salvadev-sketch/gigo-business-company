@@ -34,7 +34,7 @@ router.post("/auth/register", async (req, res) => {
         const existing = await User.findOne({ email });
         if (existing) return res.status(409).json({ error: "An account with this email already exists" });
 
-        const allowedBranches = ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"];
+        const allowedBranches = ["Bujumbura HQ", "Kampala", "Nairobi", "RDC"];
         const passwordHash = await bcrypt.hash(password, 10);
         const user = new User({
             name: name || email.split("@")[0],

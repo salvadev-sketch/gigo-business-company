@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // ── Branch ────────────────────────────────────────────────────────────────────
 const branchSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "DRC"] },
+    name: { type: String, required: true, unique: true, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "RDC"] },
     managerName: { type: String, default: "" },
     managerEmail: { type: String, default: "" },
     location: { type: String, default: "" },

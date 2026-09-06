@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, default: "" },
     photoURL: { type: String },
     role: { type: String, enum: ["owner", "branch_manager", "sales_manager", "warehouse_manager", "cashier", "employee", "customer"], default: "customer" },
-    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "DRC", "all"], default: "all" },
+    branch: { type: String, enum: ["Bujumbura HQ", "Kampala", "Nairobi", "RDC", "all"], default: "all" },
     status: { type: String, enum: ["active", "inactive"], default: "active" },
 }, { timestamps: true });
 
