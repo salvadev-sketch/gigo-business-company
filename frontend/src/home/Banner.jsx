@@ -56,7 +56,7 @@ const Banner = () => {
         zIndex: 2,
       }}>
         {/* Left content */}
-        <div style={{ flex: "1 1 280px", zIndex: 2, maxWidth: "550px" }}>
+        <div className="hero-text" style={{ flex: "1 1 280px", zIndex: 2, maxWidth: "550px" }}>
           <h1 style={{
             fontSize: "clamp(28px, 5vw, 62px)",
             fontWeight: "900",
@@ -121,7 +121,7 @@ const Banner = () => {
         </div>
 
         {/* Right - Big hero image */}
-        <div style={{
+        <div className="hero-image" style={{
           flex: "1 1 280px",
           maxWidth: "500px",
           zIndex: 2,
@@ -218,7 +218,8 @@ const Banner = () => {
       {/* Responsive CSS */}
       <style>{`
         @media (max-width: 768px) {
-          .hero-image { display: none; }
+          .hero-image { order: 1; }
+          .hero-text { order: 2; }
         }
       `}</style>
     </div>
